@@ -1,0 +1,17 @@
+.wordsBox {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.charsBox {
+  margin-right: 10px;
+  display: flex;
+}
+
+.wordsInput {
+  opacity: 0;
+  border:none;
+  resize: none;
+  position:fixed;
+}
+
