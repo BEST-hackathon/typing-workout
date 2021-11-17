@@ -1,35 +1,30 @@
-import React, { createContext, FC, useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useTypingCtx } from '../context/TypingContext'
 import styles from '../styles/Typing.module.css'
 import { WordBox } from './WordBox'
 
-
-export const TypingBox = ({ fullText }: { fullText: string }) => {
+export const TypingBox = () => {
+    const { onCharInput, words } = useTypingCtx()
     const inputRef = useRef<HTMLInputElement | null>(null)
-    const words = fullText.split(' ')
-    const [errorPostion, setErrorPosition] = useState<number | null>(null)
-    const [currPosition, setCurPosition] = useState<number>(0)
 
     useEffect(() => {
-        inputRef.current?.focus()
-        const handler = ({ key }: { key: string }) => {
-            if (fullText.charAt(currPosition) === key) {
-                console.log('hey')
-                setCurPosition((pos) => pos + 1)
-            } else {
-                setErrorPosition(currPosition)
-            }
-        }
-        document.addEventListener('keydown', handler)
+        const input = inputRef.current
+        if (!input) return
 
-        return () => document.removeEventListener('keydown', handler)
-    }, [currPosition, fullText])
+        input.focus()
+
+        const handler = ({ key }: { key: string }) => onCharInput(key)
+        input.addEventListener('keydown', handler)
+
+        return () => input.removeEventListener('keydown', handler)
+    }, [onCharInput])
 
     return (
         <>
             <input ref={inputRef} className={styles.wordsInput} />
             <div className={styles.wordsBox}>
                 {words.map((word, key) => (
-                    <WordBox key={key} value={word} />
+                    <WordBox key={key} word={word} />
                 ))}
             </div>
         </>

@@ -3,10 +3,29 @@
   flex-wrap: wrap;
 }
 
-.charsBox {
-  margin-right: 10px;
-  display: flex;
+.word {
+  margin: 0.37rem;
+  line-height: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--text-untouched);
 }
+
+.word.error {
+  border-bottom: 2px solid var(--error-color);
+}
+
+.char {
+  display: inline-block;
+}
+
+.char.correct {
+  color: var(--text-correct);
+}
+
+.char.incorrect {
+  color: var(--error-color);
+}
+
 
 .wordsInput {
   opacity: 0;
