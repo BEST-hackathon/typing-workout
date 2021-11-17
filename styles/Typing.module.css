@@ -1,6 +1,7 @@
 .wordsBox {
   display: flex;
   flex-wrap: wrap;
+  user-select: none;
 }
 
 .word {
@@ -8,6 +9,7 @@
   line-height: 1.5rem;
   font-size: 1.5rem;
   color: var(--text-untouched);
+  border-bottom: 2px solid transparent;
 }
 
 .word.error {
@@ -26,6 +28,9 @@
   color: var(--error-color);
 }
 
+.char.extra {
+  color: var(--error-extra-color);
+}
 
 .wordsInput {
   opacity: 0;

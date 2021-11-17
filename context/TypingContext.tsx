@@ -11,12 +11,14 @@ import { useTimer } from 'react-timer-hook'
 export enum CharState {
     CORRECT,
     ERROR,
+    ERROR_EXTRA,
 }
 
 export type TypingContextType = {
     activeWordIdx: number
     words: Array<{
         original: string
+        wronglyTyped: boolean
         typeHistory: Array<{
             timestamp: Date
             characters: Array<{ value: string; state?: CharState }>
@@ -64,9 +66,11 @@ const useTypingState = ({
     const restartTyping = useCallback(() => {
         setActiveWordIdx(defaultTypingCtx.activeWordIdx)
         setWords(
-            originalText
-                .split(' ')
-                .map((w) => ({ original: w, typeHistory: [] }))
+            originalText.split(' ').map((w) => ({
+                original: w,
+                typeHistory: [],
+                wronglyTyped: false,
+            }))
         )
         restart(getTimerDate(secondsCount), false)
         // eslint-disable-next-line
@@ -82,23 +86,27 @@ const useTypingState = ({
             const prevHistoryRecord = words[activeWordIdx].typeHistory.at(-1)
 
             const newHistoryRecord: TypingContextType['words'][number]['typeHistory'][number] =
-                { timestamp: new Date(Date.now()), characters: [] }
+                {
+                    timestamp: new Date(Date.now()),
+                    characters: [],
+                }
 
             switch (character) {
-                case 'Shift':
-                    break
                 case 'Backspace':
                     newHistoryRecord.characters =
                         prevHistoryRecord?.characters.slice(0, -1) || []
                     break
                 case ' ':
-                    if (prevHistoryRecord) {
+                    if (prevHistoryRecord?.characters.length) {
                         setActiveWordIdx((idx) =>
                             Math.min(idx + 1, words.length - 1)
                         )
                     }
                     return
-                default: {
+                default:
+                    //filter out Tab, Shift, etc
+                    if (character.length > 1) return
+
                     const expectedChar =
                         words[activeWordIdx].original[
                             prevHistoryRecord?.characters.length || 0
@@ -108,28 +116,41 @@ const useTypingState = ({
                         ...(prevHistoryRecord?.characters || []),
                         {
                             value: expectedChar || character,
-                            state:
-                                expectedChar === character
-                                    ? CharState.CORRECT
-                                    : CharState.ERROR,
+                            state: !expectedChar
+                                ? CharState.ERROR_EXTRA
+                                : expectedChar === character
+                                ? CharState.CORRECT
+                                : CharState.ERROR,
                         },
                     ]
                     break
-                }
             }
 
             setWords(
-                words.map((wordVal, idx) =>
-                    idx === activeWordIdx
-                        ? {
-                              ...wordVal,
-                              typeHistory: [
-                                  ...wordVal.typeHistory,
-                                  newHistoryRecord,
-                              ],
-                          }
-                        : wordVal
-                )
+                words.map((wordVal, idx) => {
+                    if (idx === activeWordIdx) {
+                        return {
+                            ...wordVal,
+                            wronglyTyped:
+                                newHistoryRecord.characters.length <
+                                    wordVal.original.length ||
+                                newHistoryRecord.characters.some((c) =>
+                                    [
+                                        CharState.ERROR,
+                                        CharState.ERROR_EXTRA,
+                                        undefined,
+                                    ].includes(c.state)
+                                ),
+                            typeHistory: [
+                                ...wordVal.typeHistory,
+                                {
+                                    ...newHistoryRecord,
+                                },
+                            ],
+                        }
+                    }
+                    return wordVal
+                })
             )
         },
         [activeWordIdx, words, resume, seconds, isRunning]

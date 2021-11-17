@@ -12,6 +12,7 @@ export const CharBox = ({
             className={cs(styles.char, {
                 [styles.incorrect]: character.state === CharState.ERROR,
                 [styles.correct]: character.state === CharState.CORRECT,
+                [styles.extra]: character.state === CharState.ERROR_EXTRA,
             })}
         >
             {character.value}

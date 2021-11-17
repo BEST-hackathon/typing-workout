@@ -4,7 +4,7 @@ import styles from '../styles/Typing.module.css'
 import { WordBox } from './WordBox'
 
 export const TypingBox = () => {
-    const { onCharInput, words } = useTypingCtx()
+    const { onCharInput, words, activeWordIdx } = useTypingCtx()
     const inputRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
@@ -27,7 +27,11 @@ export const TypingBox = () => {
                 onClick={() => inputRef.current?.focus()}
             >
                 {words.map((word, key) => (
-                    <WordBox key={key} word={word} />
+                    <WordBox
+                        key={key}
+                        word={word}
+                        isActive={key === activeWordIdx}
+                    />
                 ))}
             </div>
         </>
