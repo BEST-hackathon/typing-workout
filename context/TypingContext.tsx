@@ -7,6 +7,7 @@ import React, {
     useState,
 } from 'react'
 import { useTimer } from 'react-timer-hook'
+import { useAsyncFn, useAsyncRetry } from 'react-use'
 
 export enum CharState {
     CORRECT,
@@ -15,6 +16,7 @@ export enum CharState {
 }
 
 export type TypingContextType = {
+    isLoadingText: boolean
     activeWordIdx: number
     words: Array<{
         original: string
@@ -30,6 +32,7 @@ export type TypingContextType = {
 }
 
 const defaultTypingCtx: TypingContextType = {
+    isLoadingText: false,
     activeWordIdx: 0,
     words: [],
     onCharInput: () => {},
@@ -46,10 +49,12 @@ const getTimerDate = (seconds: number) => {
 }
 
 const useTypingState = ({
-    text: originalText,
+    fetchText,
     onComplete,
     secondsCount,
 }: TypingCtxProps): TypingContextType => {
+    const [textReqVal, textReqFn] = useAsyncFn(fetchText)
+
     const { seconds, restart, resume, isRunning } = useTimer({
         autoStart: false,
         expiryTimestamp: getTimerDate(secondsCount),
@@ -63,10 +68,11 @@ const useTypingState = ({
         defaultTypingCtx.words
     )
 
-    const restartTyping = useCallback(() => {
+    const restartTyping = useCallback(async () => {
+        const text = await textReqFn()
         setActiveWordIdx(defaultTypingCtx.activeWordIdx)
         setWords(
-            originalText.split(' ').map((w) => ({
+            text.split(' ').map((w) => ({
                 original: w,
                 typeHistory: [],
                 wronglyTyped: false,
@@ -74,9 +80,11 @@ const useTypingState = ({
         )
         restart(getTimerDate(secondsCount), false)
         // eslint-disable-next-line
-    }, [originalText, secondsCount])
+    }, [secondsCount])
 
-    useEffect(restartTyping, [restartTyping])
+    useEffect(() => {
+        restartTyping()
+    }, [restartTyping])
 
     const onCharInput = useCallback(
         (character: string) => {
@@ -158,6 +166,7 @@ const useTypingState = ({
 
     return {
         words,
+        isLoadingText: textReqVal.loading,
         onCharInput,
         activeWordIdx,
         secondsLeft: seconds,
@@ -166,7 +175,7 @@ const useTypingState = ({
 }
 
 type TypingCtxProps = {
-    text: string
+    fetchText: () => Promise<string>
     onComplete: () => void
     secondsCount: number
 }
