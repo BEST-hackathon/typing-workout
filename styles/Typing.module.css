@@ -4,7 +4,7 @@
 }
 
 .word {
-  margin: 0.37rem;
+  margin: .37rem;
   line-height: 1.5rem;
   font-size: 1.5rem;
   color: var(--text-untouched);
@@ -34,3 +34,23 @@
   position:fixed;
 }
 
+.typingContainer {
+
+}
+
+.typingContainer .time {
+  margin-left: .37rem;
+  margin-bottom: .5rem;
+  font-size: 1.5rem;
+  color: var(--main-color);
+  line-height: 1.5rem;
+}
+
+.typingContainer .restart {
+  font-weight: semibold;
+  font-size: 1.2rem;
+  color: var(--text-correct);
+  cursor: pointer;
+  margin: 3rem auto;
+  width: fit-content;
+}

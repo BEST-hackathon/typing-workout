@@ -6,6 +6,7 @@ import React, {
     useEffect,
     useState,
 } from 'react'
+import { useTimer } from 'react-timer-hook'
 
 export enum CharState {
     CORRECT,
@@ -22,36 +23,62 @@ export type TypingContextType = {
         }>
     }>
     onCharInput: (character: string) => void
+    restart: () => void
+    secondsLeft: number | null
 }
 
 const defaultTypingCtx: TypingContextType = {
     activeWordIdx: 0,
     words: [],
     onCharInput: () => {},
+    restart: () => {},
+    secondsLeft: null,
 }
 
 const TypingContext = createContext<TypingContextType>(defaultTypingCtx)
 
-const useTypingState = (originalText: string): TypingContextType => {
+const getTimerDate = (seconds: number) => {
+    const time = new Date()
+    time.setSeconds(time.getSeconds() + seconds)
+    return time
+}
+
+const useTypingState = ({
+    text: originalText,
+    onComplete,
+    secondsCount,
+}: TypingCtxProps): TypingContextType => {
+    const { seconds, restart, resume, isRunning } = useTimer({
+        autoStart: false,
+        expiryTimestamp: getTimerDate(secondsCount),
+        onExpire: onComplete,
+    })
+
     const [activeWordIdx, setActiveWordIdx] = useState(
         defaultTypingCtx.activeWordIdx
     )
     const [words, setWords] = useState<TypingContextType['words']>(
         defaultTypingCtx.words
     )
-    console.log({ words, activeWordIdx })
 
-    useEffect(() => {
+    const restartTyping = useCallback(() => {
         setActiveWordIdx(defaultTypingCtx.activeWordIdx)
         setWords(
             originalText
                 .split(' ')
                 .map((w) => ({ original: w, typeHistory: [] }))
         )
-    }, [originalText])
+        restart(getTimerDate(secondsCount), false)
+        // eslint-disable-next-line
+    }, [originalText, secondsCount])
+
+    useEffect(restartTyping, [restartTyping])
 
     const onCharInput = useCallback(
         (character: string) => {
+            if (!seconds) return
+            if (!isRunning) resume()
+
             const prevHistoryRecord = words[activeWordIdx].typeHistory.at(-1)
 
             const newHistoryRecord: TypingContextType['words'][number]['typeHistory'][number] =
@@ -105,14 +132,29 @@ const useTypingState = (originalText: string): TypingContextType => {
                 )
             )
         },
-        [activeWordIdx, words]
+        [activeWordIdx, words, resume, seconds, isRunning]
     )
 
-    return { words, onCharInput, activeWordIdx }
+    return {
+        words,
+        onCharInput,
+        activeWordIdx,
+        secondsLeft: seconds,
+        restart: restartTyping,
+    }
 }
 
-export const TypingCtxProvider: FC<{ text: string }> = ({ children, text }) => {
-    const data = useTypingState(text)
+type TypingCtxProps = {
+    text: string
+    onComplete: () => void
+    secondsCount: number
+}
+
+export const TypingCtxProvider: FC<TypingCtxProps> = ({
+    children,
+    ...props
+}) => {
+    const data = useTypingState(props)
 
     return (
         <TypingContext.Provider value={data}>{children}</TypingContext.Provider>

@@ -22,7 +22,10 @@ export const TypingBox = () => {
     return (
         <>
             <input ref={inputRef} className={styles.wordsInput} />
-            <div className={styles.wordsBox}>
+            <div
+                className={styles.wordsBox}
+                onClick={() => inputRef.current?.focus()}
+            >
                 {words.map((word, key) => (
                     <WordBox key={key} word={word} />
                 ))}
