@@ -67,7 +67,7 @@ const useTypingState = (originalText: string): TypingContextType => {
                 case ' ':
                     if (prevHistoryRecord) {
                         setActiveWordIdx((idx) =>
-                            Math.min(idx + 1, words.length)
+                            Math.min(idx + 1, words.length - 1)
                         )
                     }
                     return
@@ -80,7 +80,7 @@ const useTypingState = (originalText: string): TypingContextType => {
                     newHistoryRecord.characters = [
                         ...(prevHistoryRecord?.characters || []),
                         {
-                            value: expectedChar,
+                            value: expectedChar || character,
                             state:
                                 expectedChar === character
                                     ? CharState.CORRECT
