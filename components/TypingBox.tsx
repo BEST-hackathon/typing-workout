@@ -1,21 +1,7 @@
-import React, { createContext, FC, useEffect, useRef, useState } from 'react'
+import React, { createContext, FC, useContext, useEffect, useRef, useState } from 'react'
 import styles from '../styles/Typing.module.css'
 import { WordBox } from './WordBox'
 
-type TypingContextType = {
-    words: Array<{
-        original: string
-        typeHistory: string[]
-    }>
-}
-
-const TypingContext = createContext({})
-
-export const TypingCtxProvider: FC = ({ children }) => {
-    return (
-        <TypingContext.Provider value={{}}>{children}</TypingContext.Provider>
-    )
-}
 
 export const TypingBox = ({ fullText }: { fullText: string }) => {
     const inputRef = useRef<HTMLInputElement | null>(null)
