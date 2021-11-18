@@ -9,6 +9,7 @@ import {
     ResponsiveContainer,
 } from 'recharts'
 import { CharState } from '../context/TypingContext'
+import styles from '../styles/Analytics.module.css'
 import { useTypingCtx } from '../context/TypingContext'
 
 const useAnalyticsChartData = () => {
@@ -63,43 +64,36 @@ export const AnalyticsChart = () => {
     }
 
     return (
-        <ResponsiveContainer height={400} width="100%">
-            <LineChart
-                data={chartsData}
-                margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                }}
-            >
-                <CartesianGrid />
-                <XAxis />
-                <YAxis
-                    yAxisId="left"
-                    // label={{ value: 'NIgger', angle: -90 }}
-                />
-                <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    // label={{ value: 'NIgger', angle: 90 }}
-                />
-                <Tooltip />
-                <Legend />
-                <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="wpm"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                />
-                <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="raw"
-                    stroke="#82ca9d"
-                />
-            </LineChart>
-        </ResponsiveContainer>
+        <>
+            <h1 className={styles.title}>
+                <span>RAW</span> and <span>WPM</span> stats
+            </h1>
+            <ResponsiveContainer height={300} width="100%">
+                <LineChart data={chartsData}>
+                    <CartesianGrid />
+                    <XAxis />
+                    <YAxis
+                        yAxisId="left"
+                        // label={{ value: 'NIgger', angle: -90 }}
+                    />
+                    <YAxis yAxisId="right" orientation="right" />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="wpm"
+                        stroke="#8884d8"
+                        activeDot={{ r: 8 }}
+                    />
+                    <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="raw"
+                        stroke="#82ca9d"
+                    />
+                </LineChart>
+            </ResponsiveContainer>
+        </>
     )
 }
