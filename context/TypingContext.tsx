@@ -30,6 +30,7 @@ export type TypingContextType = {
     restart: () => void
     secondsLeft: number | null
     attemptDuration: number
+    setAttemptDuration: (to: number) => void
 }
 
 const defaultTypingCtx: TypingContextType = {
@@ -40,6 +41,7 @@ const defaultTypingCtx: TypingContextType = {
     restart: () => {},
     secondsLeft: null,
     attemptDuration: 30,
+    setAttemptDuration: () => {},
 }
 
 const TypingContext = createContext<TypingContextType>(defaultTypingCtx)
@@ -53,22 +55,23 @@ const getTimerDate = (seconds: number) => {
 const useTypingState = ({
     fetchText,
     onComplete,
-    attemptDuration,
+    attemptDuration: _attemptDuration,
 }: TypingCtxProps): TypingContextType => {
     const [textReqVal, textReqFn] = useAsyncFn(fetchText)
 
-    const { seconds, restart, resume, isRunning } = useTimer({
-        autoStart: false,
-        expiryTimestamp: getTimerDate(attemptDuration),
-        onExpire: onComplete,
-    })
-
+    const [attemptDuration, setAttemptDuration] = useState(_attemptDuration)
     const [activeWordIdx, setActiveWordIdx] = useState(
         defaultTypingCtx.activeWordIdx
     )
     const [words, setWords] = useState<TypingContextType['words']>(
         defaultTypingCtx.words
     )
+
+    const { seconds, restart, resume, isRunning } = useTimer({
+        autoStart: false,
+        expiryTimestamp: getTimerDate(attemptDuration),
+        onExpire: onComplete,
+    })
 
     const restartTyping = useCallback(async () => {
         const text = await textReqFn()
@@ -173,6 +176,7 @@ const useTypingState = ({
         activeWordIdx,
         attemptDuration,
         secondsLeft: seconds,
+        setAttemptDuration,
         restart: restartTyping,
     }
 }

@@ -2,6 +2,10 @@
   display: flex;
   flex-wrap: wrap;
   user-select: none;
+  overflow: hidden;
+  height: 114px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .word {
@@ -44,11 +48,17 @@
 }
 
 .typingContainer .time {
+  display: flex;
   margin-left: .37rem;
   margin-bottom: .5rem;
   font-size: 1.5rem;
   color: var(--main-color);
   line-height: 1.5rem;
+}
+
+.timePick {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .typingContainer .restart {
