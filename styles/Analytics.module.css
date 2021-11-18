@@ -29,4 +29,36 @@
     margin-top: 2rem;
     flex: 1;
     width: 100%;
+    color: var(--text-correct);
+    align-items: center;
+    justify-content: center;
+}
+
+.numbersBox {
+    display: flex;
+    /* text-align: center; */
+    flex-direction: column;
+    justify-content: center;
+}
+
+.restart {
+    font-weight: semibold;
+    font-size: 1.2rem;
+    color: var(--text-correct);
+    cursor: pointer;
+    margin: 3rem auto;
+    width: fit-content;
+}
+
+.numbersBox div h1 {
+    font-size: 4rem;
+    line-height: 0;
+}
+
+.numbersBox div span {
+    font-size: 1rem;
+}
+
+.numbersBox div:nth-child(even) {
+    margin-top: 4rem;
 }

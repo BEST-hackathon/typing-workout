@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { TypingBox } from './TypingBox'
 import styles from '../styles/Typing.module.css'
 import { useTypingCtx } from '../context/TypingContext'
@@ -14,16 +14,15 @@ export const TypingContainer = () => {
                 <p>
                     {secondsLeft} (
                     {availableTimes.map((time, index, array) => (
-                        <>
+                        <Fragment key={index}>
                             <a
-                                key={index}
                                 className={styles.timePick}
                                 onClick={() => setAttemptDuration(time)}
                             >
                                 {time}
                             </a>
                             {array.length - 1 !== index && ' | '}
-                        </>
+                        </Fragment>
                     ))}
                     )
                 </p>

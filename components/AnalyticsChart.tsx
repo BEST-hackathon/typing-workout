@@ -75,15 +75,8 @@ export const AnalyticsChart = () => {
             >
                 <CartesianGrid />
                 <XAxis />
-                <YAxis
-                    yAxisId="left"
-                    // label={{ value: 'NIgger', angle: -90 }}
-                />
-                <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    // label={{ value: 'NIgger', angle: 90 }}
-                />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" />
                 <Tooltip />
                 <Legend />
                 <Line
