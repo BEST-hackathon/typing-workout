@@ -7,7 +7,7 @@ import React, {
     useState,
 } from 'react'
 import { useTimer } from 'react-timer-hook'
-import { useAsyncFn, useAsyncRetry } from 'react-use'
+import { useAsyncFn } from 'react-use'
 
 export enum CharState {
     CORRECT,
@@ -29,6 +29,7 @@ export type TypingContextType = {
     onCharInput: (character: string) => void
     restart: () => void
     secondsLeft: number | null
+    attemptDuration: number
 }
 
 const defaultTypingCtx: TypingContextType = {
@@ -38,6 +39,7 @@ const defaultTypingCtx: TypingContextType = {
     onCharInput: () => {},
     restart: () => {},
     secondsLeft: null,
+    attemptDuration: 30,
 }
 
 const TypingContext = createContext<TypingContextType>(defaultTypingCtx)
@@ -51,13 +53,13 @@ const getTimerDate = (seconds: number) => {
 const useTypingState = ({
     fetchText,
     onComplete,
-    secondsCount,
+    attemptDuration,
 }: TypingCtxProps): TypingContextType => {
     const [textReqVal, textReqFn] = useAsyncFn(fetchText)
 
     const { seconds, restart, resume, isRunning } = useTimer({
         autoStart: false,
-        expiryTimestamp: getTimerDate(secondsCount),
+        expiryTimestamp: getTimerDate(attemptDuration),
         onExpire: onComplete,
     })
 
@@ -78,9 +80,9 @@ const useTypingState = ({
                 wronglyTyped: false,
             }))
         )
-        restart(getTimerDate(secondsCount), false)
+        restart(getTimerDate(attemptDuration), false)
         // eslint-disable-next-line
-    }, [secondsCount])
+    }, [attemptDuration])
 
     useEffect(() => {
         restartTyping()
@@ -169,6 +171,7 @@ const useTypingState = ({
         isLoadingText: textReqVal.loading,
         onCharInput,
         activeWordIdx,
+        attemptDuration,
         secondsLeft: seconds,
         restart: restartTyping,
     }
@@ -177,7 +180,7 @@ const useTypingState = ({
 type TypingCtxProps = {
     fetchText: () => Promise<string>
     onComplete: () => void
-    secondsCount: number
+    attemptDuration: number
 }
 
 export const TypingCtxProvider: FC<TypingCtxProps> = ({

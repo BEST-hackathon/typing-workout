@@ -7,7 +7,7 @@ import { RandomTextPayload } from './api/random-text'
 function MyApp({ Component, pageProps, router }: AppProps) {
     return (
         <TypingCtxProvider
-            secondsCount={30}
+            attemptDuration={30}
             fetchText={() =>
                 fetch('/api/random-text')
                     .then<RandomTextPayload>((res) => res.json())
