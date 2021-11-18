@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import React from 'react'
+import { AttemptDurationSettings } from '../components/AttemptDurationSettings'
 import { Footer } from '../components/Footer'
 import { TypingContainer } from '../components/TypingContainer'
 import styles from '../styles/Home.module.css'
@@ -22,13 +23,15 @@ const Home: NextPage = () => {
                     Welcome to <a href="#">Typing Trainer!</a>
                 </h1>
 
+                <div className={styles.settings}>
+                    <AttemptDurationSettings />
+                </div>
+
                 <p className={styles.description}>
                     Get started by focusing the input
                 </p>
 
-                <div className={styles.grid}>
-                    <TypingContainer />
-                </div>
+                <TypingContainer />
             </main>
 
             <Footer />

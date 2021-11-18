@@ -94,7 +94,7 @@ const useTypingState = ({
     const onCharInput = useCallback(
         (character: string) => {
             if (!seconds) return
-            if (!isRunning) resume()
+            if (!isRunning && character.length === 1) resume()
 
             const prevHistoryRecord = words[activeWordIdx].typeHistory.at(-1)
 

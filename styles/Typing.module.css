@@ -2,10 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   user-select: none;
-  overflow: hidden;
-  height: 114px;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+    max-width: 1000px;
 }
 
 .word {
@@ -56,9 +53,24 @@
   line-height: 1.5rem;
 }
 
+.timePickBox {
+  display: flex;
+}
+
 .timePick {
-  text-decoration: underline;
   cursor: pointer;
+  margin: .5rem;
+  color: var(--text-untouched);
+  font-weight: semibold;
+  font-size: 1.3rem;
+}
+
+.timePick:hover {
+  color: white !important;
+}
+
+.timePick.active {
+  color: var(--main-color);
 }
 
 .typingContainer .restart {
