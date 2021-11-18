@@ -8,68 +8,64 @@ import {
     Legend,
     ResponsiveContainer,
 } from 'recharts'
+import { CharState } from '../context/TypingContext'
 import { useTypingCtx } from '../context/TypingContext'
-import { calculateRangedCharactersCount } from '../utils/calculateRangedCharactersCount'
+
+const useAnalyticsChartData = () => {
+    const { words, attemptDuration, secondsLeft } = useTypingCtx()
+
+    if (secondsLeft !== 0) {
+        return null
+    }
+
+    const attemptStart = words[0].typeHistory[0].timestamp.getTime()
+
+    const secondToData = Array.from({ length: attemptDuration }).reduce<
+        Record<number, { allCharsCount: number; correctCharsCount: number }>
+    >((acc, _, idx) => {
+        acc[idx + 1] = { allCharsCount: 0, correctCharsCount: 0 }
+        return acc
+    }, {})
+
+    words.forEach((word) =>
+        word.typeHistory.forEach((historyEntry, historyEntryIdx, history) => {
+            const secondsFromStart = Math.floor(
+                (historyEntry.timestamp.getTime() - attemptStart) / 1000
+            )
+            const prevHistoryEntry = history[historyEntryIdx - 1]
+
+            // when user typed new character (not backslash)
+            if (
+                (prevHistoryEntry?.characters.length || 0) <
+                historyEntry.characters.length
+            ) {
+                const newChar = historyEntry.characters.at(-1)
+                if (newChar?.state === CharState.CORRECT) {
+                    secondToData[secondsFromStart + 1].correctCharsCount++
+                }
+                secondToData[secondsFromStart + 1].allCharsCount++
+            }
+        })
+    )
+
+    return Object.entries(secondToData).map(([second, data]) => ({
+        second,
+        wpm: (data.correctCharsCount * 60) / 5,
+        raw: (data.allCharsCount * 60) / 5,
+    }))
+}
 
 export const AnalyticsChart = () => {
-    const { words, attemptDuration } = useTypingCtx()
+    const chartsData = useAnalyticsChartData()
 
-    const startTime = words[0].typeHistory[0].timestamp
-    const correctWords = words.filter((w) => !w.wronglyTyped)
-
-    console.log(words)
-
-    const data = Array.from(Array(attemptDuration).keys())
-        .map((second) => {
-            if (!correctWords.length) return 0
-
-            const leftRelativeTime = new Date(
-                startTime.getTime() + second * 1000
-            )
-
-            const rightRelativeTime = new Date(
-                startTime.getTime() + (second + 1) * 1000
-            )
-
-            const relativeAllCharactersCount = calculateRangedCharactersCount(
-                words,
-                {
-                    from: leftRelativeTime,
-                    to: rightRelativeTime,
-                },
-                false
-            )
-
-            const relativeCorrectCharactersCount =
-                calculateRangedCharactersCount(
-                    correctWords,
-                    {
-                        from: leftRelativeTime,
-                        to: rightRelativeTime,
-                    },
-                    true
-                )
-
-            return [relativeCorrectCharactersCount, relativeAllCharactersCount]
-        })
-        .reduce(
-            (acc: any, el: any, idx) => [
-                ...acc,
-                {
-                    second: idx + 1,
-                    wpm: (el[0] / 5) * 60,
-                    raw: (el[1] / 5) * 60,
-                },
-            ],
-            []
-        )
-
-    console.log(data)
+    if (!chartsData) {
+        return <div>Complete the typing test!</div>
+    }
 
     return (
         <ResponsiveContainer height={400} width="100%">
             <LineChart
-                data={data}
+                data={chartsData}
                 margin={{
                     top: 5,
                     right: 30,
@@ -77,13 +73,16 @@ export const AnalyticsChart = () => {
                     bottom: 5,
                 }}
             >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid />
                 <XAxis />
-                <YAxis yAxisId="left" label={{ value: 'NIgger', angle: -90 }} />
+                <YAxis
+                    yAxisId="left"
+                    // label={{ value: 'NIgger', angle: -90 }}
+                />
                 <YAxis
                     yAxisId="right"
                     orientation="right"
-                    label={{ value: 'NIgger', angle: 90 }}
+                    // label={{ value: 'NIgger', angle: 90 }}
                 />
                 <Tooltip />
                 <Legend />

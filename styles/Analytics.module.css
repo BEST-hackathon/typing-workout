@@ -26,6 +26,7 @@
 
 .statsBox {
     display: flex;
+    margin-top: 2rem;
     flex: 1;
     width: 100%;
 }

@@ -36,7 +36,7 @@ const defaultTypingCtx: TypingContextType = {
     onCharInput: () => {},
     restart: () => {},
     secondsLeft: null,
-    attemptDuration: 30
+    attemptDuration: 30,
 }
 
 const TypingContext = createContext<TypingContextType>(defaultTypingCtx)
