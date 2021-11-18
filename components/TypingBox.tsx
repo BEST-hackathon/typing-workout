@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import { useTypingCtx } from '../context/TypingContext'
 import styles from '../styles/Typing.module.css'
+import cs from 'classnames'
 import { WordBox } from './WordBox'
 
 export const TypingBox = () => {
-    const { onCharInput, words, activeWordIdx } = useTypingCtx()
+    const { onCharInput, words, activeWordIdx, isLoadingText } = useTypingCtx()
     const inputRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
@@ -23,7 +24,9 @@ export const TypingBox = () => {
         <>
             <input ref={inputRef} className={styles.wordsInput} />
             <div
-                className={styles.wordsBox}
+                className={cs(styles.wordsBox, {
+                    [styles.blurred]: isLoadingText,
+                })}
                 onClick={() => inputRef.current?.focus()}
             >
                 {words.map((word, key) => (
