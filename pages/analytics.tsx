@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import React from 'react'
+import { AnalyticsChart } from '../components/AnalyticsChart'
 import { Footer } from '../components/Footer'
 import styles from '../styles/Analytics.module.css'
 
@@ -16,7 +17,9 @@ const Analytics: NextPage = () => {
                     Attempt <span>Analytics</span>
                 </h1>
 
-                <div></div>
+                <div className={styles.statsBox}>
+                    <AnalyticsChart />
+                </div>
             </main>
 
             <Footer />

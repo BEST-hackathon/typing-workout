@@ -21,6 +21,11 @@
     color: var(--text-correct);
     margin: 0;
     line-height: 1.15;
-    font-size: 3.0rem;
+    font-size: 3rem;
 }
 
+.statsBox {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
