@@ -1,6 +1,7 @@
 import { useLocalStorage } from 'react-use'
 import { CharState } from '../context/TypingContext/context'
 import { TypingCtxProps } from '../context/TypingContext/provider'
+import { getLast } from '../utils/getLast'
 
 type AttemptStats = {
     wpm: number
@@ -85,6 +86,6 @@ export const useAttemptsHistory = (): {
             setHistory([...history, { timestamp: Date.now(), record }])
         },
         history,
-        latestAttempt: history?.[history.length - 1],
+        latestAttempt: getLast(history),
     }
 }

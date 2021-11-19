@@ -3,6 +3,7 @@ import cs from 'classnames'
 import styles from '../styles/Typing.module.css'
 import { CharBox } from './CharBox'
 import { TypingContextType } from '../context/TypingContext/context'
+import { getLast } from '../utils/getLast'
 
 export const WordBox = ({
     word,
@@ -12,7 +13,7 @@ export const WordBox = ({
     word: TypingContextType['words'][number]
 }) => {
     const originalChars = Array.from(word.original)
-    const typedChars = word.typeHistory.at(-1)?.characters || []
+    const typedChars = getLast(word.typeHistory)?.characters || []
     const chars = [
         ...typedChars,
         ...originalChars.slice(typedChars.length).map((c) => ({ value: c })),
