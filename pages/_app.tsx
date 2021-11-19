@@ -11,7 +11,7 @@ function MyApp({
     Component,
     pageProps,
     router,
-    initialText,
+    initialText = '',
 }: AppProps & { initialText: string }) {
     const { addAttempt } = useAttemptsHistory()
 
@@ -30,13 +30,13 @@ function MyApp({
     )
 }
 
-MyApp.getInitialProps = async (ctx: AppContext) => {
-    const payload = await App.getInitialProps(ctx)
-    const initialText = await getRandomText(absoluteUrl(ctx.ctx.req).origin)
-    return {
-        ...payload,
-        initialText,
-    }
-}
+// MyApp.getInitialProps = async (ctx: AppContext) => {
+//     const payload = await App.getInitialProps(ctx)
+//     const initialText = await getRandomText(absoluteUrl(ctx.ctx.req).origin)
+//     return {
+//         ...payload,
+//         initialText,
+//     }
+// }
 
 export default MyApp
