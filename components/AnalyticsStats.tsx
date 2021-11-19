@@ -1,16 +1,10 @@
 import { useTypingCtx } from '../context/TypingContext'
+import { useTypingSpeed } from '../hooks/useTypingSpeed'
 import styles from '../styles/Analytics.module.css'
 
 export const AnalyticsStats = () => {
     const { words, attemptDuration } = useTypingCtx()
-
-    const wpm =
-        words.filter((w) => !w.wronglyTyped && w.typeHistory.length).length *
-        (60 / attemptDuration)
-
-    const raw =
-        words.filter((w) => w.typeHistory.length).length *
-        (60 / attemptDuration)
+    const [wpm, raw] = useTypingSpeed()(words, attemptDuration)
 
     return (
         <div className={styles.statsNumbers}>

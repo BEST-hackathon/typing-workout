@@ -1,6 +1,7 @@
-import { CharState, TypingContextType } from '../context/TypingContext'
+import { TypingContextType } from '../context/TypingContext'
 import cs from 'classnames'
 import styles from '../styles/Typing.module.css'
+import { CharState } from "../types";
 
 export const CharBox = ({
     character,

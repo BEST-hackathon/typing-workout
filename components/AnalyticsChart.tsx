@@ -8,9 +8,9 @@ import {
     Legend,
     ResponsiveContainer,
 } from 'recharts'
-import { CharState } from '../context/TypingContext'
 import styles from '../styles/Analytics.module.css'
 import { useTypingCtx } from '../context/TypingContext'
+import { CharState } from "../types";
 
 const useAnalyticsChartData = () => {
     const { words, attemptDuration, secondsLeft } = useTypingCtx()
