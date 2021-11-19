@@ -30,12 +30,13 @@ function MyApp({
     )
 }
 
-MyApp.getInitialProps = async (ctx: AppContext) => {
-    // const payload = await App.getInitialProps(ctx)
-    const initialText = await getRandomText(absoluteUrl(ctx.ctx.req).origin)
-    console.log({ initialText })
+MyApp.getInitialProps = async (app: AppContext) => {
+    const payload = await App.getInitialProps(app)
+    const initialText = await getRandomText(
+        absoluteUrl(app.ctx.req, app.ctx.req?.headers.host).origin
+    )
     return {
-        // ...payload,
+        ...payload,
         initialText: initialText || 'some hey',
     }
 }
