@@ -8,10 +8,13 @@ import {
     Legend,
     ResponsiveContainer,
 } from 'recharts'
+import { useAttemptsHistory } from '../hooks/useAttemptsHistory'
 import styles from '../styles/Analytics.module.css'
 
 export const UserProgressChart = () => {
-    const chartsData = [{ wpm: 40 }, { wpm: 50 }, { wpm: 37 }, { wpm: 60 }]
+    const { history } = useAttemptsHistory()
+
+    const chartsData = history.map((h) => ({ wpm: h.record.wpm }))
 
     return (
         <>
@@ -32,7 +35,6 @@ export const UserProgressChart = () => {
                         type="monotone"
                         dataKey="wpm"
                         stroke="#8884d8"
-                        activeDot={{ r: 8 }}
                     />
                 </LineChart>
             </ResponsiveContainer>

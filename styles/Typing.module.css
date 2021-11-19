@@ -78,10 +78,14 @@
 }
 
 .typingContainer .restart {
-  font-weight: semibold;
-  font-size: 1.2rem;
-  color: var(--text-correct);
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: var(--text-untouched);
   cursor: pointer;
-  margin: 3rem auto;
+  margin: 6rem auto 0;
   width: fit-content;
+}
+
+.typingContainer .restart:hover {
+  color: var(--text-correct);
 }

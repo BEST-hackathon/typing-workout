@@ -71,11 +71,15 @@
 }
 
 .restart {
-    font-weight: semibold;
-    font-size: 1.2rem;
-    color: var(--text-correct);
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--text-untouched);
     cursor: pointer;
-    margin: 3rem auto;
+    margin: 0 auto 1rem;
     width: fit-content;
+}
+
+.restart:hover {
+  color: var(--text-correct)
 }
 

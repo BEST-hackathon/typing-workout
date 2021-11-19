@@ -36,13 +36,6 @@ const Analytics: NextPage = () => {
                     raw={latestAttempt.record.raw}
                 />
 
-                <div className={styles.statsBox}>
-                    <AnalyticsChart />
-                </div>
-
-                <div className={styles.statsBox}>
-                    <UserProgressChart />
-                </div>
                 <div
                     className={styles.restart}
                     onClick={() => {
@@ -51,6 +44,14 @@ const Analytics: NextPage = () => {
                     }}
                 >
                     Try again
+                </div>
+
+                <div className={styles.statsBox}>
+                    <AnalyticsChart />
+                </div>
+
+                <div className={styles.statsBox}>
+                    <UserProgressChart />
                 </div>
             </main>
 
