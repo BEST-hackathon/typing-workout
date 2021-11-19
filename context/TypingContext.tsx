@@ -35,6 +35,15 @@ export type TypingContextType = {
     setAttemptDuration: (to: number) => void
 }
 
+export type TypingCtxProps = {
+    initialText: string
+    fetchText: () => Promise<string>
+    onComplete: (
+        ctx: Pick<TypingContextType, 'words' | 'attemptDuration'>
+    ) => void
+    attemptDuration: number
+}
+
 const defaultTypingCtx: TypingContextType = {
     isLoadingText: false,
     activeWordIdx: 0,
@@ -56,10 +65,14 @@ const getTimerDate = (seconds: number) => {
 
 const useTypingState = ({
     fetchText,
+    initialText,
     onComplete,
     attemptDuration: _attemptDuration,
 }: TypingCtxProps): TypingContextType => {
-    const [textReqVal, textReqFn] = useAsyncFn(fetchText)
+    const [textReqVal, textReqFn] = useAsyncFn(fetchText, [], {
+        loading: false,
+        value: initialText,
+    })
 
     const [attemptDuration, setAttemptDuration] = useState(_attemptDuration)
     const [activeWordIdx, setActiveWordIdx] = useState(
@@ -75,23 +88,17 @@ const useTypingState = ({
         onExpire: () => onComplete({ words, attemptDuration }),
     })
 
-    const restartTyping = useCallback(async () => {
-        const text = await textReqFn()
+    useEffect(() => {
+        if (!textReqVal.value) return
         setActiveWordIdx(defaultTypingCtx.activeWordIdx)
         setWords(
-            text.split(' ').map((w) => ({
+            textReqVal.value.split(' ').map((w) => ({
                 original: w,
                 typeHistory: [],
                 wronglyTyped: false,
             }))
         )
-        restart(getTimerDate(attemptDuration), false)
-        // eslint-disable-next-line
-    }, [attemptDuration])
-
-    useEffect(() => {
-        restartTyping()
-    }, [restartTyping])
+    }, [textReqVal.value])
 
     const onCharInput = useCallback(
         (character: string) => {
@@ -179,16 +186,11 @@ const useTypingState = ({
         attemptDuration,
         secondsLeft: seconds,
         setAttemptDuration,
-        restart: restartTyping,
+        restart: () => {
+            textReqFn()
+            restart(getTimerDate(attemptDuration), false)
+        },
     }
-}
-
-export type TypingCtxProps = {
-    fetchText: () => Promise<string>
-    onComplete: (
-        ctx: Pick<TypingContextType, 'words' | 'attemptDuration'>
-    ) => void
-    attemptDuration: number
 }
 
 export const TypingCtxProvider: FC<TypingCtxProps> = ({
