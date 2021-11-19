@@ -1,3 +1,4 @@
+import { AppProps } from 'next/dist/shared/lib/router/router'
 import React from 'react'
 import { TypingCtxProvider } from '../context/TypingContext/provider'
 import { useAttemptsHistory } from '../hooks/useAttemptsHistory'
