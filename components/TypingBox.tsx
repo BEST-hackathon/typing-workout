@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react'
-import { useTypingCtx } from '../context/TypingContext'
 import styles from '../styles/Typing.module.css'
 import cs from 'classnames'
 import { WordBox } from './WordBox'
+import { useTypingCtx } from '../context/TypingContext/provider'
 
 export const TypingBox = () => {
     const { onCharInput, words, activeWordIdx, isLoadingText } = useTypingCtx()

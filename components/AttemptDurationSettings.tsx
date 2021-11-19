@@ -1,5 +1,5 @@
-import { useTypingCtx } from '../context/TypingContext'
 import cs from 'classnames'
+import { useTypingCtx } from '../context/TypingContext/provider'
 import styles from '../styles/Typing.module.css'
 
 const availableTimes = [15, 30, 45]

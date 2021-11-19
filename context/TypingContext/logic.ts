@@ -1,61 +1,8 @@
-import React, {
-    createContext,
-    FC,
-    useCallback,
-    useContext,
-    useEffect,
-    useState,
-} from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTimer } from 'react-timer-hook'
 import { useAsyncFn } from 'react-use'
-
-export enum CharState {
-    CORRECT,
-    ERROR,
-    ERROR_EXTRA,
-}
-
-export type Words = Array<{
-    original: string
-    wronglyTyped: boolean
-    typeHistory: Array<{
-        timestamp: Date
-        characters: Array<{ value: string; state?: CharState }>
-    }>
-}>
-
-export type TypingContextType = {
-    isLoadingText: boolean
-    activeWordIdx: number
-    words: Words
-    onCharInput: (character: string) => void
-    restart: () => void
-    secondsLeft: number | null
-    attemptDuration: number
-    setAttemptDuration: (to: number) => void
-}
-
-export type TypingCtxProps = {
-    initialText: string
-    fetchText: () => Promise<string>
-    onComplete: (
-        ctx: Pick<TypingContextType, 'words' | 'attemptDuration'>
-    ) => void
-    attemptDuration: number
-}
-
-const defaultTypingCtx: TypingContextType = {
-    isLoadingText: false,
-    activeWordIdx: 0,
-    words: [],
-    onCharInput: () => {},
-    restart: () => {},
-    secondsLeft: null,
-    attemptDuration: 30,
-    setAttemptDuration: () => {},
-}
-
-const TypingContext = createContext<TypingContextType>(defaultTypingCtx)
+import { CharState, defaultTypingCtx, TypingContextType } from './context'
+import { TypingCtxProps } from './provider'
 
 const getTimerDate = (seconds: number) => {
     const time = new Date()
@@ -63,23 +10,27 @@ const getTimerDate = (seconds: number) => {
     return time
 }
 
-const useTypingState = ({
+const transformText = (text: string) =>
+    text.split(' ').map((w) => ({
+        original: w,
+        typeHistory: [],
+        wronglyTyped: false,
+    }))
+
+export const useTypingState = ({
     fetchText,
     initialText,
     onComplete,
     attemptDuration: _attemptDuration,
 }: TypingCtxProps): TypingContextType => {
-    const [textReqVal, textReqFn] = useAsyncFn(fetchText, [], {
-        loading: false,
-        value: initialText,
-    })
+    const [textReqVal, textReqFn] = useAsyncFn(fetchText)
 
     const [attemptDuration, setAttemptDuration] = useState(_attemptDuration)
     const [activeWordIdx, setActiveWordIdx] = useState(
         defaultTypingCtx.activeWordIdx
     )
     const [words, setWords] = useState<TypingContextType['words']>(
-        defaultTypingCtx.words
+        () => transformText(initialText) || defaultTypingCtx.words
     )
 
     const { seconds, restart, resume, isRunning } = useTimer({
@@ -89,16 +40,11 @@ const useTypingState = ({
     })
 
     useEffect(() => {
-        if (!textReqVal.value) return
+        restart(getTimerDate(attemptDuration), false)
         setActiveWordIdx(defaultTypingCtx.activeWordIdx)
-        setWords(
-            textReqVal.value.split(' ').map((w) => ({
-                original: w,
-                typeHistory: [],
-                wronglyTyped: false,
-            }))
-        )
-    }, [textReqVal.value])
+        setWords(transformText(textReqVal?.value || initialText))
+        // eslint-disable-next-line
+    }, [textReqVal.value, attemptDuration])
 
     const onCharInput = useCallback(
         (character: string) => {
@@ -186,22 +132,6 @@ const useTypingState = ({
         attemptDuration,
         secondsLeft: seconds,
         setAttemptDuration,
-        restart: () => {
-            textReqFn()
-            restart(getTimerDate(attemptDuration), false)
-        },
+        restart: () => textReqFn(),
     }
 }
-
-export const TypingCtxProvider: FC<TypingCtxProps> = ({
-    children,
-    ...props
-}) => {
-    const data = useTypingState(props)
-
-    return (
-        <TypingContext.Provider value={data}>{children}</TypingContext.Provider>
-    )
-}
-
-export const useTypingCtx = () => useContext(TypingContext)

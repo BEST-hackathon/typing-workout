@@ -6,7 +6,7 @@ import { AnalyticsChart } from '../components/AnalyticsChart'
 import { AnalyticsStats } from '../components/AnalyticsStats'
 import { Footer } from '../components/Footer'
 import { UserProgressChart } from '../components/UserProgressChart'
-import { useTypingCtx } from '../context/TypingContext'
+import { useTypingCtx } from '../context/TypingContext/provider'
 import { useAttemptsHistory } from '../hooks/useAttemptsHistory'
 import styles from '../styles/Analytics.module.css'
 

@@ -1,5 +1,6 @@
 import { useLocalStorage } from 'react-use'
-import { TypingCtxProps, CharState } from '../context/TypingContext'
+import { CharState } from '../context/TypingContext/context'
+import { TypingCtxProps } from '../context/TypingContext/provider'
 
 type AttemptStats = {
     wpm: number

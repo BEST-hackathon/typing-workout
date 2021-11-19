@@ -1,8 +1,8 @@
 import React from 'react'
-import { TypingContextType } from '../context/TypingContext'
 import cs from 'classnames'
 import styles from '../styles/Typing.module.css'
 import { CharBox } from './CharBox'
+import { TypingContextType } from '../context/TypingContext/context'
 
 export const WordBox = ({
     word,
