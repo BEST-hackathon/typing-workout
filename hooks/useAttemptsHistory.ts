@@ -84,6 +84,6 @@ export const useAttemptsHistory = (): {
             setHistory([...history, { timestamp: Date.now(), record }])
         },
         history,
-        latestAttempt: history.at(-1),
+        latestAttempt: history?.at(-1),
     }
 }
