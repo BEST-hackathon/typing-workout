@@ -33,11 +33,12 @@ function MyApp({
 MyApp.getInitialProps = async (app: AppContext) => {
     const payload = await App.getInitialProps(app)
     const initialText = await getRandomText(
-        'https://typing-workout.vercel.app/'
-    )
+        absoluteUrl(app.ctx.req, app.ctx.req?.headers.host).origin
+    ).catch()
+
     return {
         ...payload,
-        initialText,
+        initialText: initialText || 'some hey',
     }
 }
 
