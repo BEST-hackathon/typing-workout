@@ -7,6 +7,7 @@ import { AnalyticsStats } from '../components/AnalyticsStats'
 import { Footer } from '../components/Footer'
 import { UserProgressChart } from '../components/UserProgressChart'
 import { useTypingCtx } from '../context/TypingContext'
+import dynamic from 'next/dynamic'
 import { useAttemptsHistory } from '../hooks/useAttemptsHistory'
 import styles from '../styles/Analytics.module.css'
 
@@ -60,4 +61,6 @@ const Analytics: NextPage = () => {
     )
 }
 
-export default Analytics
+export default dynamic(() => Promise.resolve(Analytics), {
+    ssr: false,
+})
