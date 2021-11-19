@@ -1,14 +1,12 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { TypingCtxProvider, useTypingCtx } from '../context/TypingContext'
+import { TypingCtxProvider } from '../context/TypingContext'
 import { RandomTextPayload } from './api/random-text'
-import { useTypingAttempts } from '../hooks/useTypingAttempts'
-import { useTypingSpeed } from '../hooks/useTypingSpeed'
+import { useAttemptsHistory } from '../hooks/useAttemptsHistory'
 
 function MyApp({ Component, pageProps, router }: AppProps) {
-    const [value, setValue] = useTypingAttempts()
-    const typingSpeed = useTypingSpeed()
+    const { addAttempt } = useAttemptsHistory()
 
     return (
         <TypingCtxProvider
@@ -18,12 +16,8 @@ function MyApp({ Component, pageProps, router }: AppProps) {
                     .then<RandomTextPayload>((res) => res.json())
                     .then((res) => res.randomText)
             }
-            onComplete={(words, attemptDuration) => {
-                setValue({
-                    ...value,
-                    [Date.now()]: typingSpeed(words, attemptDuration),
-                })
-
+            onComplete={(payload) => {
+                addAttempt(payload)
                 router.push('/analytics')
             }}
         >

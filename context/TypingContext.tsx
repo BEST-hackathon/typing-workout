@@ -8,7 +8,21 @@ import React, {
 } from 'react'
 import { useTimer } from 'react-timer-hook'
 import { useAsyncFn } from 'react-use'
-import { CharState, Words } from '../types'
+
+export enum CharState {
+    CORRECT,
+    ERROR,
+    ERROR_EXTRA,
+}
+
+export type Words = Array<{
+    original: string
+    wronglyTyped: boolean
+    typeHistory: Array<{
+        timestamp: Date
+        characters: Array<{ value: string; state?: CharState }>
+    }>
+}>
 
 export type TypingContextType = {
     isLoadingText: boolean
@@ -58,7 +72,7 @@ const useTypingState = ({
     const { seconds, restart, resume, isRunning } = useTimer({
         autoStart: false,
         expiryTimestamp: getTimerDate(attemptDuration),
-        onExpire: () => onComplete(words, attemptDuration),
+        onExpire: () => onComplete({ words, attemptDuration }),
     })
 
     const restartTyping = useCallback(async () => {
@@ -169,9 +183,11 @@ const useTypingState = ({
     }
 }
 
-type TypingCtxProps = {
+export type TypingCtxProps = {
     fetchText: () => Promise<string>
-    onComplete: (words: Words, attemptDuration: number) => void
+    onComplete: (
+        ctx: Pick<TypingContextType, 'words' | 'attemptDuration'>
+    ) => void
     attemptDuration: number
 }
 

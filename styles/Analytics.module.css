@@ -45,25 +45,25 @@
     text-align: center;
 }
 
-.statsNumbers {
+.typingStats {
     display: flex;
     margin-bottom: 2rem;
 }
 
-.statsNumbers div {
+.typingStats div {
   margin: 0 6rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.statsNumbers div h1 {
+.typingStats div h1 {
     font-size: 6rem;
     color: var(--main-color);
     line-height: 0;
 }
 
-.statsNumbers div span {
+.typingStats div span {
     margin-top: -.5rem;
     font-size: 1.5rem;
     font-weight: semibold;

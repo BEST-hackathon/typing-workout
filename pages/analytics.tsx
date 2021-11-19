@@ -7,11 +7,17 @@ import { AnalyticsStats } from '../components/AnalyticsStats'
 import { Footer } from '../components/Footer'
 import { UserProgressChart } from '../components/UserProgressChart'
 import { useTypingCtx } from '../context/TypingContext'
+import { useAttemptsHistory } from '../hooks/useAttemptsHistory'
 import styles from '../styles/Analytics.module.css'
 
 const Analytics: NextPage = () => {
     const router = useRouter()
-    const { restart, attemptDuration } = useTypingCtx()
+    const { restart } = useTypingCtx()
+    const { latestAttempt } = useAttemptsHistory()
+
+    if (!latestAttempt) {
+        return <div>Complete the typing test first!</div>
+    }
 
     return (
         <div className={styles.container}>
@@ -21,10 +27,14 @@ const Analytics: NextPage = () => {
 
             <main className={styles.main}>
                 <h1 className={styles.title}>
-                    <span>{attemptDuration}</span> sec typing completed!
+                    <span>{latestAttempt.record.attemptDuration}</span> sec
+                    typing completed!
                 </h1>
 
-                <AnalyticsStats />
+                <AnalyticsStats
+                    wpm={latestAttempt.record.wpm}
+                    raw={latestAttempt.record.raw}
+                />
 
                 <div className={styles.statsBox}>
                     <AnalyticsChart />

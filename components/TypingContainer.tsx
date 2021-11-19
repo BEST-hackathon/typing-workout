@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { TypingBox } from './TypingBox'
 import styles from '../styles/Typing.module.css'
 import { useTypingCtx } from '../context/TypingContext'
